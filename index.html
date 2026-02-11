@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathDiverge - Career Butterfly Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+        }
+
+        .form-container {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        select,
+        input {
+            padding: 0.5rem;
+            width: 100%;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 0.75rem 2rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .error {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 4px;
+            color: #c33;
+        }
+
+        .results {
+            margin-top: 2rem;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .results h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .metric-card.green {
+            background: #e8f5e9;
+        }
+
+        .metric-card.blue {
+            background: #e3f2fd;
+        }
+
+        .metric-card.orange {
+            background: #fff3e0;
+        }
+
+        .metric-card.purple {
+            background: #f3e5f5;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .metric-value.green {
+            color: #27ae60;
+        }
+
+        .metric-value.blue {
+            color: #2980b9;
+        }
+
+        .metric-value.orange {
+            color: #f39c12;
+        }
+
+        .metric-value.purple {
+            color: #8e44ad;
+        }
+
+        .distribution h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .distribution-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .distribution-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .distribution-bar-bg {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .distribution-bar {
+            background: #3498db;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🦋 PathDiverge</h1>
+        <p class="subtitle">Career Path Butterfly Simulator</p>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label for="specialization">Specialization:</label>
+                <select id="specialization">
+                    <option value="early">Early Specialization</option>
+                    <option value="none">Generalist</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="riskLevel">Risk Level:</label>
+                <select id="riskLevel">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high" selected>High</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="iterations">Iterations:</label>
+                <input type="number" id="iterations" value="2500" min="100" max="10000">
+            </div>
+
+            <button id="runBtn" onclick="runSimulation()">Run Simulation</button>
+        </div>
+
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="results" class="results" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function runSimulation() {
+            const btn = document.getElementById('runBtn');
+            const errorDiv = document.getElementById('error');
+            const resultsDiv = document.getElementById('results');
+
+            // Hide previous results/errors
+            errorDiv.style.display = 'none';
+            resultsDiv.style.display = 'none';
+
+            // Disable button
+            btn.disabled = true;
+            btn.textContent = 'Running Simulation...';
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/simulate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        specialization: document.getElementById('specialization').value,
+                        risk_level: document.getElementById('riskLevel').value,
+                        iterations: parseInt(document.getElementById('iterations').value)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                displayResults(data);
+
+            } catch (err) {
+                errorDiv.innerHTML = `
+                    <strong>Error:</strong> ${err.message}<br>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                        Make sure the FastAPI backend is running on http://127.0.0.1:8000
+                    </p>
+                `;
+                errorDiv.style.display = 'block';
+                console.error('Simulation error:', err);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Run Simulation';
+            }
+        }
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            const metrics = data.metrics;
+            const distributions = data.distributions;
+
+            // Get top 5 peak roles
+            const topRoles = Object.entries(distributions.peak_role)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            resultsDiv.innerHTML = `
+                <h2>📊 Results</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card green">
+                        <div class="metric-label">Director+ Probability</div>
+                        <div class="metric-value green">
+                            ${(metrics.director_probability.mean * 100).toFixed(1)}%
+                        </div>
+                    </div>
+
+                    <div class="metric-card blue">
+                        <div class="metric-label">Avg Retirement Age</div>
+                        <div class="metric-value blue">
+                            ${metrics.retirement_age.mean?.toFixed(1) || 'N/A'}
+                        </div>
+                    </div>
+
+                    <div class="metric-card orange">
+                        <div class="metric-label">Avg Unemployment</div>
+                        <div class="metric-value orange">
+                            ${metrics.unemployment_years.mean?.toFixed(1)} years
+                        </div>
+                    </div>
+
+                    <div class="metric-card purple">
+                        <div class="metric-label">Total Simulations</div>
+                        <div class="metric-value purple">
+                            ${data.meta.total_simulations.toLocaleString()}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="distribution">
+                    <h3>Peak Role Distribution</h3>
+                    ${topRoles.map(([role, prob]) => `
+                        <div class="distribution-item">
+                            <div class="distribution-header">
+                                <span>${role}</span>
+                                <span style="font-weight: bold;">${(prob * 100).toFixed(1)}%</span>
+                            </div>
+                            <div class="distribution-bar-bg">
+                                <div class="distribution-bar" style="width: ${prob * 100}%"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            resultsDiv.style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

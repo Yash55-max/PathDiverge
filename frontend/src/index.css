@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+    .bg-grid-pattern {
+        background-image: linear-gradient(to right, #064e3b 1px, transparent 1px),
+            linear-gradient(to bottom, #064e3b 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+}
+
+@keyframes gradient-xy {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+.animate-gradient-bg {
+    background: linear-gradient(-45deg, #020617, #064e3b, #000000, #14532d);
+    background-size: 400% 400%;
+    animation: gradient-xy 15s ease infinite;
+}
