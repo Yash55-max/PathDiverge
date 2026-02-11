@@ -93,6 +93,6 @@ npm run dev
 ---
 
 ## 👨‍💻 Author
-**Yashwant**  
+**Yashwanth Ponnam**  
 *Building systems that model the real world.*  
 [GitHub Profile](https://github.com/Yash55-max)
