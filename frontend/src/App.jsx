@@ -47,9 +47,10 @@ function App() {
     const runSimulation = async () => {
         setLoading(true);
         try {
+            const API_BASE = "https://pathdiverge-production.up.railway.app";
             const endpoint = compareMode
-                ? "http://127.0.0.1:8000/comparative"
-                : "http://127.0.0.1:8000/simulate";
+                ? `${API_BASE}/comparative`
+                : `${API_BASE}/simulate`;
 
             const body = {
                 specialization: specialization,
@@ -310,8 +311,8 @@ function App() {
                                     {compareMode && comparison.delta !== null && (
                                         <div
                                             className={`px-3 py-1 rounded text-sm font-bold font-mono flex items-center cursor-help ${comparison.delta > 0
-                                                    ? (isDarkMode ? "bg-green-900/50 text-green-400 border border-green-800/50" : "bg-green-100 text-green-800 border border-green-200")
-                                                    : (isDarkMode ? "bg-red-900/50 text-red-400 border border-red-800/50" : "bg-red-100 text-red-800 border border-red-200")
+                                                ? (isDarkMode ? "bg-green-900/50 text-green-400 border border-green-800/50" : "bg-green-100 text-green-800 border border-green-200")
+                                                : (isDarkMode ? "bg-red-900/50 text-red-400 border border-red-800/50" : "bg-red-100 text-red-800 border border-red-200")
                                                 }`}
                                             title={`Exact difference: ${comparison.delta > 0 ? "+" : ""}${comparison.delta.toFixed(4)} pp`}
                                         >
