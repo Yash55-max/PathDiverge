@@ -47,6 +47,10 @@ The simulation engine treats a career as a **Markov Chain-like process** where s
 
 ---
 
+## 📷 Screenshots
+<img width="1917" height="1038" alt="image" src="https://github.com/user-attachments/assets/c98aa6d8-04e4-4418-b751-bc1ce71f12ce" />
+
+---
 ## 📦 Installation & Setup
 
 ### **Prerequisites**
