@@ -15,7 +15,7 @@ STATES = [
     "Retired", "Unemployed"
 ]
 
-# Base transition probabilities (CALIBRATED for semi-realistic outcomes)
+# Base transition probabilities (CALIBRATED for semi - realistic outcomes)
 TRANSITIONS = {
     "Entry Level": {"Entry Level": 0.45, "Junior": 0.30, "Mid-Level": 0.05, "Unemployed": 0.20},
     "Junior": {"Junior": 0.40, "Mid-Level": 0.30, "Senior": 0.05, "Entry Level": 0.10, "Unemployed": 0.15},
