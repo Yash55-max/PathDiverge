@@ -47,7 +47,7 @@ function App() {
     const runSimulation = async () => {
         setLoading(true);
         try {
-            const API_BASE = import.meta.env.VITE_API_URL;
+            const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
             const endpoint = compareMode
                 ? `${API_BASE}/comparative/`
                 : `${API_BASE}/simulate/`;
