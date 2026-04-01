@@ -67,6 +67,7 @@ function App() {
             });
 
             const data = await response.json();
+            console.log("[PathDiverge] API response:", data);
             setResult(data);
         } catch (error) {
             console.error("Simulation failed:", error);
@@ -76,22 +77,40 @@ function App() {
         }
     };
 
+    /**
+     * Normalize a single simulation result.
+     * The Render backend wraps /simulate responses in a { control: {...} } envelope.
+     * This unwraps it so the rest of the code always gets { metrics, distributions, meta }.
+     */
+    const normalizeResult = (data) => {
+        if (!data) return null;
+        // /simulate response wrapped in "control" key
+        if (data.control && data.control.metrics) return data.control;
+        // already flat { metrics, distributions, meta }
+        if (data.metrics) return data;
+        return data;
+    };
+
     const getComparisonData = () => {
         if (!result) return null;
 
         if (!compareMode) {
+            // Single simulation — unwrap if backend wrapped in "control"
             return {
-                selected: result,
+                selected: normalizeResult(result),
                 baseline: null,
                 delta: null,
             };
         }
 
+        // Comparative mode — backend returns { control, specialist, risktaker, deltas }
         let selectedKey = "specialist";
         if (riskLevel === "high") selectedKey = "risktaker";
 
         const selected = result[selectedKey];
         const baseline = result.control;
+
+        if (!selected || !baseline) return null;
 
         const probSelected = selected.metrics.director_probability.mean;
         const probBaseline = baseline.metrics.director_probability.mean;
